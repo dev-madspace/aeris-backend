@@ -13,3 +13,5 @@ const HOST = '0.0.0.0'; // 👈 This makes it listen on all IPs (public + local)
 server.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}`);
 });
+
+// You can now access the server at http://localhost:3000
