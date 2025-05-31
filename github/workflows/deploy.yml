@@ -1,0 +1,28 @@
+name: 🚀 Auto Deploy to GCP VM
+
+on:
+  push:
+    branches: [ main ]  # Change to your branch if different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup SSH Access
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.GCP_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H 35.244.51.63 >> ~/.ssh/known_hosts
+
+    - name: SSH Deploy to GCP
+      run: |
+        ssh -i ~/.ssh/id_ed25519 gcp@35.244.51.63 << 'EOF'
+          cd ~/node-backend
+          git pull origin main
+          pm2 restart backend
+        EOF
